@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── BASE RESETS ── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #080808;
+  color: #f0ede6;
+  font-family: 'Inter', 'DM Sans', system-ui, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom cursor only on devices that support hover (not touch-only) */
+@media (hover: hover) {
+  body {
+    cursor: none;
+  }
+}
+@media (hover: none) {
+  .custom-cursor-dot,
+  .custom-cursor-ring {
+    display: none !important;
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Left-to-right underline on hover (header & footer nav links) */
+.underline-lr {
+  position: relative;
+}
+.underline-lr::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 100% 0;
+  transition: transform 0.28s ease;
+}
+.underline-lr:hover::after {
+  transform: scaleX(1);
+  transform-origin: 0 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .underline-lr::after {
+    transition: none;
+  }
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #080808; }
+::-webkit-scrollbar-thumb { background: #1e1e1e; border-radius: 9px; }
+::-webkit-scrollbar-thumb:hover { background: #ff5210; }
+
+/* ── NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.022;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── HERO GRID ── */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(#161616 1px, transparent 1px),
+    linear-gradient(90deg, #161616 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 20%, transparent 100%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ── REVEAL ANIMATION ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal.vis {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .reveal.vis { opacity: 1; }
+}
+
+/* Hero scroll hint: fade in then subtle pulse */
+@keyframes scrollHintPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.scroll-hint {
+  animation: fadeIn 1.2s 1s ease both, scrollHintPulse 2.5s ease-in-out 2.2s infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint { animation: fadeIn 1.2s 1s ease both; }
+}
+
+/* ── TASK CARD LEFT BAR ── */
+.task-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 0;
+  background: #ff5210;
+  transition: height 0.3s;
+}
+.task-card:hover::before {
+  height: 100%;
+}
+
+/* Task card stagger on scroll reveal */
+@keyframes fadeUpReveal {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal .task-card {
+  opacity: 0;
+  transform: translateY(22px);
+}
+.reveal.vis .task-card {
+  animation: fadeUpReveal 0.5s ease both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal .task-card,
+  .reveal.vis .task-card {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
+/* ── FILE ZONE ── */
+.file-zone input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── FORM VALIDATION ── */
+.fg.invalid input,
+.fg.invalid select,
+.fg.invalid textarea {
+  border-color: #f87171 !important;
+}
+.fg .err { display: none; }
+.fg.invalid .err { display: block; }
+
+/* ── FOCUS (hide default outline; components use focus-visible:ring) ── */
+*:focus {
+  outline: none;
+}
